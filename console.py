@@ -37,7 +37,8 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, arg):
         """Creates a new instance of a class"""
         ids = ['city_id', 'user_id']
-        args = shlex.split(arg)
+        args = arg.split()
+#        print(args)
         if len(args) == 0:
             print("** class name missing **")
             return False
@@ -46,22 +47,28 @@ class HBNBCommand(cmd.Cmd):
             for param in args[1:]:
                 '''parse param into key_name & value'''
                 param_match = re.fullmatch(
-                    '[A-Za-z_]+="?([-A-Za-z0-9\._]+)"?', param)
+                    '[A-Za-z_]+="([-A-Za-z0-9\._]+)"', param)
+                param = shlex.shlex(param)
+                param.whitespace += '='
+                param.whitespace_split = True
+                param_list = list(param)
                 if param_match is not None:
-                    param = shlex.shlex(param)
-                    param.whitespace += '='
-                    param.whitespace_split = True
-                    param_list = list(param)
+                  #  print(param_list)
+                    value = shlex.split(param_list[1])
+                    param_list[1] = value[0]
+                   # print(param_list[1])
                     if '_' in param_list[1]:
                         param_list[1] = param_list[1].replace('_', ' ')
-                    elif '.' in param_list[1]:
-                        param_list[1] = float(param_list[1])
-                    elif param_list[0] not in ids and re.search(
-                            '[0-9]', param_list[1]):
-                        param_list[1] = int(param_list[1])
-                    '''update instane with given params'''
-                    setattr(instance, param_list[0], param_list[1])
-                    instance.save()
+                else:
+                    if param_list[0] not in ids and re.search(
+                            '^[-0-9\.]+$', param_list[1]):
+                        if '.' in param_list[1]:
+                            param_list[1] = float(param_list[1])
+                        else:
+                            param_list[1] = int(param_list[1])
+                '''update instane with given params'''
+                setattr(instance, param_list[0], param_list[1])
+                instance.save()
             print(instance.id)
         else:
             print("** class doesn't exist **")
