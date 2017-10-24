@@ -5,6 +5,7 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 import os
 
+
 class State(BaseModel, Base):
     """Representation of state """
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
@@ -20,10 +21,11 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
-        """returns a list of City instances with state_id == current State.id"""
+        """returns a list of City instances with state_id = current State.id"""
         all_instances = models.storage.all()
         query = []
         for key, value in all_instances.items():
-            if key.startswith('City') and getattr(value, 'state_id') == self.id:
+            if key.startswith('City') and getattr(
+                    value, 'state_id') == self.id:
                 query.append(value)
         return query

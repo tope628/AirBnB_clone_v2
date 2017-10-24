@@ -15,6 +15,7 @@ if os.getenv("HBNB_TYPE_STORAGE") == "db":
 else:
     Base = object
 
+
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
