@@ -68,7 +68,7 @@ class HBNBCommand(cmd.Cmd):
                             param_list[1] = int(param_list[1])
                 '''update instane with given params'''
                 setattr(instance, param_list[0], param_list[1])
-                instance.save()
+            instance.save()
             print(instance.id)
         else:
             print("** class doesn't exist **")
