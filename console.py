@@ -53,10 +53,12 @@ class HBNBCommand(cmd.Cmd):
                 param.whitespace_split = True
                 param_list = list(param)
                 if param_match is not None:
-                  #  print(param_list)
+#                    print(param_list)
                     value = shlex.split(param_list[1])
+#                    print(value)
                     param_list[1] = value[0]
-                   # print(param_list[1])
+#                    print(param_list[0])
+#                    print(param_list[1])
                     if '_' in param_list[1]:
                         param_list[1] = param_list[1].replace('_', ' ')
                 else:
@@ -67,6 +69,8 @@ class HBNBCommand(cmd.Cmd):
                         else:
                             param_list[1] = int(param_list[1])
                 '''update instane with given params'''
+#                print(param_list[0])
+#                print(param_list[1])
                 setattr(instance, param_list[0], param_list[1])
             instance.save()
             print(instance.id)
