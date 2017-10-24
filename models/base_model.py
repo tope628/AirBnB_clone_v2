@@ -10,7 +10,10 @@ import uuid
 import os
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
-Base = declarative_base()
+if os.getenv("HBNB_TYPE_STORAGE") == "db":
+    Base = declarative_base()
+else:
+    Base = object
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
@@ -19,8 +22,6 @@ class BaseModel:
         '''CHECK: DATETIME CAN"T BE NULL'''
         created_at = Column(DateTime, default=datetime.utcnow)
         updated_at = Column(DateTime, default=datetime.utcnow)
-    else:
-        pass
 
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
@@ -28,15 +29,20 @@ class BaseModel:
             for key, value in kwargs.items():
                 if key != "__class__":
                     setattr(self, key, value)
-            if hasattr(self, "created_at") and type(self.created_at) is str:
+            if kwargs.get("created_at", None) and type(self.created_at) is str:
                 self.created_at = datetime.strptime(kwargs["created_at"], time)
-            if hasattr(self, "updated_at") and type(self.updated_at) is str:
+            else:
+                self.created_at = datetime.utcnow()
+            if hasattr("updated_at", None) and type(self.updated_at) is str:
                 self.updated_at = datetime.strptime(kwargs["updated_at"], time)
+            else:
+                self.created_at = datetime.utcnow()
+            if kwargs.get("id", None) is None:
+                self.id = str(uuid.uuid4())
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = self.created_at
-            models.storage.save()
 
     def __str__(self):
         """String representation of the BaseModel class"""
@@ -58,7 +64,7 @@ class BaseModel:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
         new_dict["__class__"] = self.__class__.__name__
         try:
-            del new_dict[_sa_instance_state]
+            del new_dict["_sa_instance_state"]
         except KeyError:
             pass
         return new_dict

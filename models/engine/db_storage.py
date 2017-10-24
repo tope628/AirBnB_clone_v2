@@ -2,6 +2,7 @@
 """set up database for storage"""
 
 import os
+import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -33,21 +34,19 @@ class DBStorage:
     def all(self, cls=None):
         """query objects of the specified class from the DB"""
         obj_dict = {}
-        obj_types = [State]
-#        obj_types = [User, State, City, Amenity, Place, Review]
+        obj_types = [State, City, User, Amenity, Place, Review]
 
-        if cls is None:
-            '''query all objects'''
-            for obj_type in obj_types:
-                for instance in self.__session.query(obj_type):
-                    key = obj_type.__name__ + '.' + instance.id
+        for obj in obj_types:
+            if cls is None:
+                '''query all objects'''
+                for instance in self.__session.query(obj).all():
+                    key = instance.__class__.__name__ + '.' + instance.id
                     obj_dict[key] = instance
-        else:
-            for instance in self.__session.query(cls):
-                key = cls.__name__ + '.' + instance.id
-                obj_dict[key] = instance
-
-        return obj_dict
+            else:
+                for instance in self.__session.query(cls):
+                    key = cls.__name__ + '.' + instance.id
+                    obj_dict[key] = instance
+            return obj_dict
 
     def new(self, obj):
         """add the object to the current DB session"""
@@ -61,8 +60,6 @@ class DBStorage:
         """delete from the current DB session obj if not None"""
         if obj is not None:
             self.__session.delete(obj)
-        else:
-            pass
 
     def reload(self):
         Base.metadata.create_all(self.__engine)
