@@ -52,7 +52,6 @@ class HBNBCommand(cmd.Cmd):
                 param.whitespace += '='
                 param.whitespace_split = True
                 param_list = list(param)
-                print(param_list)
                 if param_match is not None:
                   #  print(param_list)
                     value = shlex.split(param_list[1])
