@@ -54,11 +54,12 @@ class HBNBCommand(cmd.Cmd):
                     param_list = list(param)
                     if '_' in param_list[1]:
                         param_list[1] = param_list[1].replace('_', ' ')
-                    elif '.' in param_list[1]:
-                        param_list[1] = float(param_list[1])
-                    elif param_list[0] not in ids and re.search(
-                            '[0-9]', param_list[1]):
-                        param_list[1] = int(param_list[1])
+                    if param_list[0] not in ids:
+                        if re.search('[0-9]+', param_list[1]):
+                            if '.' in param_list[1]:
+                                param_list[1] = float(param_list[1])
+                            else:
+                                param_list[1] = int(param_list[1])
                     '''update instane with given params'''
                     setattr(instance, param_list[0], param_list[1])
                     instance.save()
