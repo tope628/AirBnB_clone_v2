@@ -2,6 +2,7 @@
 """ console """
 
 import cmd
+import re
 from datetime import datetime
 import models
 from models.amenity import Amenity
@@ -35,6 +36,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """Creates a new instance of a class"""
+        ids = ['city_id', 'user_id']
         args = shlex.split(arg)
         if len(args) == 0:
             print("** class name missing **")
@@ -42,19 +44,28 @@ class HBNBCommand(cmd.Cmd):
         if args[0] in classes:
             instance = classes[args[0]]()
             for param in args[1:]:
-                '''parse param into key_name & values'''
-                param = shlex.shlex(param)
-                param.whitespace += '='
-                param.whitespace_split = True
-                param_list = list(param)
-                '''update instane with given params'''
-                setattr(instance, param_list[0], param_list[1])
-                instance.save()
+                '''parse param into key_name & value'''
+                param_match = re.fullmatch(
+                    '[A-Za-z_]+="?([-A-Za-z0-9\._]+)"?', param)
+                if param_match is not None:
+                    param = shlex.shlex(param)
+                    param.whitespace += '='
+                    param.whitespace_split = True
+                    param_list = list(param)
+                    if '_' in param_list[1]:
+                        param_list[1] = param_list[1].replace('_', ' ')
+                    elif '.' in param_list[1]:
+                        param_list[1] = float(param_list[1])
+                    elif param_list[0] not in ids and re.search(
+                            '[0-9]', param_list[1]):
+                        param_list[1] = int(param_list[1])
+                    '''update instane with given params'''
+                    setattr(instance, param_list[0], param_list[1])
+                    instance.save()
+            print(instance.id)
         else:
             print("** class doesn't exist **")
             return False
-        print(instance.id)
-
 
     def do_show(self, arg):
         """Prints an instance as a string based on the class and id"""
