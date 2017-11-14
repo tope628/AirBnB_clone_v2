@@ -41,11 +41,20 @@ class HBNBCommand(cmd.Cmd):
             return False
         if args[0] in classes:
             instance = classes[args[0]]()
+            for param in args[1:]:
+                '''parse param into key_name & values'''
+                param = shlex.shlex(param)
+                param.whitespace += '='
+                param.whitespace_split = True
+                param_list = list(param)
+                '''update instane with given params'''
+                setattr(instance, param_list[0], param_list[1])
+                instance.save()
         else:
             print("** class doesn't exist **")
             return False
         print(instance.id)
-        instance.save()
+
 
     def do_show(self, arg):
         """Prints an instance as a string based on the class and id"""
