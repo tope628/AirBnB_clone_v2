@@ -3,21 +3,24 @@
 Contains class BaseModel
 """
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, ForeignKey, Datetime
+from sqlalchemy import Column, String, ForeignKey, DateTime
 from datetime import datetime
 import models
 import uuid
+import os
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 Base = declarative_base()
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
-
-    id = Column(String(60), primary_key=True)
-    '''CHECK: DATETIME CAN"T BE NULL'''
-    created_at = Column(Datetime, default=datetime.utcnow)
-    updated_at = Column(Datetime, default=datetime.utcnow)
+    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+        id = Column(String(60), primary_key=True)
+        '''CHECK: DATETIME CAN"T BE NULL'''
+        created_at = Column(DateTime, default=datetime.utcnow)
+        updated_at = Column(DateTime, default=datetime.utcnow)
+    else:
+        pass
 
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
