@@ -1,14 +1,25 @@
 #!/usr/bin/python
 """ holds class User"""
+
+import os
 from models.base_model import BaseModel
+from sqlalchemy.orm import relationship
 
 
 class User(BaseModel):
     """Representation of a user """
-    email = ""
-    password = ""
-    first_name = ""
-    last_name = ""
+    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+        __tablename__ = 'users'
+        email = Column(String(128), nullable=False)
+        password = Column(String(128), nullable=False)
+        first_name = Column(String(128), nullable=True)
+        last_name = Column(String(128), nullable=True)
+        places = relationship("Place", backref="user", cascade="delete")
+    else:
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""
 
     def __init__(self, *args, **kwargs):
         """initializes user"""
