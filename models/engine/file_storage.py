@@ -26,6 +26,13 @@ class FileStorage:
 
     def all(self, cls=None):
         """returns the dictionary __objects"""
+        print("passing thru filestorage")
+        if cls is not None:
+            new_dict = {}
+            for key, val in self.__objects.items():
+                if val.__class__ == cls:
+                    new_dict[key] = val
+            return new_dict
         return self.__objects
 
     def new(self, obj):
@@ -53,7 +60,7 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """delete obj from __objects if it’s inside"""
+        """delete obj from __objects if its inside"""
         if obj is not None:
             key = obj.__class__.__name__ + "." + obj.id
             try:

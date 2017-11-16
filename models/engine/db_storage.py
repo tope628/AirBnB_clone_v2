@@ -2,6 +2,7 @@
 """set up database for storage"""
 
 import os
+import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -23,31 +24,30 @@ class DBStorage:
     host = os.getenv("HBNB_MYSQL_HOST")
     db = os.getenv("HBNB_MYSQL_DB")
 
-
     def __init__(self):
         self.__engine = create_engine(
-            'mysql+mysqldb://{}:{}@{}/{}'.format(self.user, self.passwd, self.host, self.db))
+            'mysql+mysqldb://{}:{}@{}/{}'.format(
+                self.user, self.passwd, self.host, self.db))
         if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """query objects of the specified class from the DB"""
         obj_dict = {}
-        obj_types = [State]
-#        obj_types = [User, State, City, Amenity, Place, Review]
+        obj_types = [State, City, User, Amenity, Place, Review]
 
-        if cls is None:
-            '''query all objects'''
-            for obj_type in obj_types:
-                for instance in self.__session.query(obj_type):
-                    key = obj_type.__name__ + '.' + instance.id
+        for obj in obj_types:
+#            print(obj)
+ #           print("CLASS: {}".format(cls))
+            if cls is None or cls in obj_types:
+                '''query all objects'''
+                for instance in self.__session.query(cls).all():
+  #                  print("instance: {}".format(instance))
+                    key = obj.__name__ + '.' + instance.id
+                    #print(key)
                     obj_dict[key] = instance
-        else:
-            for instance in self.__session.query(cls):
-                key = cls.__name__ + '.' + instance.id
-                obj_dict[key] = instance
-
-        return obj_dict
+   #         print(obj_dict)
+            return obj_dict
 
     def new(self, obj):
         """add the object to the current DB session"""
@@ -61,11 +61,10 @@ class DBStorage:
         """delete from the current DB session obj if not None"""
         if obj is not None:
             self.__session.delete(obj)
-        else:
-            pass
 
     def reload(self):
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(
+            bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()

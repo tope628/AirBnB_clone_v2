@@ -53,10 +53,12 @@ class HBNBCommand(cmd.Cmd):
                 param.whitespace_split = True
                 param_list = list(param)
                 if param_match is not None:
-                  #  print(param_list)
+#                    print(param_list)
                     value = shlex.split(param_list[1])
+#                    print(value)
                     param_list[1] = value[0]
-                   # print(param_list[1])
+#                    print(param_list[0])
+#                    print(param_list[1])
                     if '_' in param_list[1]:
                         param_list[1] = param_list[1].replace('_', ' ')
                 else:
@@ -67,8 +69,10 @@ class HBNBCommand(cmd.Cmd):
                         else:
                             param_list[1] = int(param_list[1])
                 '''update instane with given params'''
+#                print(param_list[0])
+#                print(param_list[1])
                 setattr(instance, param_list[0], param_list[1])
-                instance.save()
+            instance.save()
             print(instance.id)
         else:
             print("** class doesn't exist **")
@@ -110,25 +114,40 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
-    def do_all(self, arg):
+    def do_all(self, args):
         """Prints string representations of instances"""
-        args = shlex.split(arg)
+#        args = shlex.split(arg)
         obj_list = []
-        if len(args) == 0:
-            for value in models.storage.all().values():
-                obj_list.append(str(value))
-            print("[", end="")
-            print(", ".join(obj_list), end="")
-            print("]")
-        elif args[0] in classes:
-            for key in models.storage.all():
-                if args[0] in key:
-                    obj_list.append(str(models.storage.all()[key]))
-            print("[", end="")
-            print(", ".join(obj_list), end="")
-            print("]")
-        else:
+#        if len(args) == 0:
+#            for value in models.storage.all().values():
+#                obj_list.append(str(value))
+#            print("[", end="")
+#            print(", ".join(obj_list), end="")
+#            print("]")
+#        elif args[0] in classes:
+#            for key in models.storage.all():
+#                if args[0] in key:
+#                    obj_list.append(str(models.storage.all()[key]))
+#            print("[", end="")
+#            print(", ".join(obj_list), end="")
+#            print("]")
+#        else:
+#            print("** class doesn't exist **")
+        list_args = args.split()
+
+        if len(list_args) != 0 and list_args[0] not in classes:
             print("** class doesn't exist **")
+            return False
+
+        if len(list_args) == 0:  # print all objects, since no class specified
+            all_objs = models.storage.all()
+        else:  # only print objects matching specified class
+            all_objs = models.storage.all(classes[list_args[0]])
+        for obj in all_objs:
+            obj_list.append(str(all_objs[obj]))
+        print("[", end="")
+        print(", ".join(obj_list), end="")
+        print("]")
 
     def do_update(self, arg):
         """Update an instance based on the class name, id, attribute & value"""

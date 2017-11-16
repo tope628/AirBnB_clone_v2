@@ -2,11 +2,12 @@
 """ holds class User"""
 
 import os
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """Representation of a user """
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = 'users'
@@ -15,6 +16,7 @@ class User(BaseModel):
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
         places = relationship("Place", backref="user", cascade="delete")
+
     else:
         email = ""
         password = ""
