@@ -4,16 +4,15 @@
 import os
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from models.amenity import Amenity
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 from models.city import City
 from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
 
-Base = declarative_base()
 
 class DBStorage:
     """connect to MySQL database"""
@@ -24,17 +23,18 @@ class DBStorage:
     host = os.getenv("HBNB_MYSQL_HOST")
     db = os.getenv("HBNB_MYSQL_DB")
 
+
     def __init__(self):
         self.__engine = create_engine(
-            'mysql+mysqldb://{}:{}@{}/{}'.format(
-                self.user, self.passwd, self.host, self.db))
+            'mysql+mysqldb://{}:{}@{}/{}'.format(self.user, self.passwd, self.host, self.db))
         if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """query objects of the specified class from the DB"""
         obj_dict = {}
-        obj_types = [User, State, City, Amenity, Place, Review]
+        obj_types = [State]
+#        obj_types = [User, State, City, Amenity, Place, Review]
 
         if cls is None:
             '''query all objects'''
@@ -65,9 +65,7 @@ class DBStorage:
             pass
 
     def reload(self):
-        """create all tables in the DB & the current session from the engine"""
-        '''create_all creates tables if not already exist'''
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=some_engine, expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
