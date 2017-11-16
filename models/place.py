@@ -3,8 +3,15 @@
 
 import os
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
+
+
+place_amenity = Table('association', Base.metadata,
+                      Column('place_id', String(60), ForeignKey(
+                          'places.id'), primary_key=True),
+                      Column('amenity_id', String(60), ForeignKey(
+                          'amenities.id'), primary_key=True))
 
 
 class Place(BaseModel, Base):
@@ -22,6 +29,9 @@ class Place(BaseModel, Base):
         latitude = Column(Float)
         longitude = Column(Float)
         reviews = relationship("Review", backref="place", cascade="delete")
+        amenities = relationship(
+            "Amenity", secondary=place_amenity, viewonly=False,
+            backref="place_amenities", cascade="delete")
 
     else:
         city_id = ""
@@ -47,6 +57,17 @@ class Place(BaseModel, Base):
             query = []
             for key, value in all_instances.items():
                 if key.startswith('Review') and getattr(
+                        value, 'place_id') == self.id:
+                    query.append(value)
+            return query
+
+        @property
+        def amenities(self):
+            """returns Amenity instances w/ place_id = current Place.id"""
+            all_instances = models.storage.all()
+            query = []
+            for key, value in all_instances.items():
+                if key.startswith('Amenity') and getattr(
                         value, 'place_id') == self.id:
                     query.append(value)
             return query
