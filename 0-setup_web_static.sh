@@ -4,7 +4,7 @@
 # install Nginx
 sudo apt-get update
 sudo apt-get -y install nginx
-service nginx start
+sudo service nginx start
 
 # create folders if not already exist
 mkdir --parents /data/web_static/releases/test/
@@ -30,4 +30,4 @@ sudo chown -R ubuntu:ubuntu /data/
 cd /etc/nginx/sites-available
 sudo rm -f default
 wget https://github.com/tanyastropheus/AirBnB_clone_v2/blob/master/default
-service nginx restart
+sudo service nginx restart
