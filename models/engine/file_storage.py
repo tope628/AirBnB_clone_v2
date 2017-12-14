@@ -29,7 +29,7 @@ class FileStorage:
         if cls is not None:
             new_dict = {}
             for key, val in self.__objects.items():
-                if val.__class__ == cls:
+                if val.__class__.__name__ == cls.__name__:
                     new_dict[key] = val
             return new_dict
         return self.__objects
@@ -69,4 +69,4 @@ class FileStorage:
 
     def close(self):
         """deserializing the JSON file to objects"""
-        self.reload()
+        reload()

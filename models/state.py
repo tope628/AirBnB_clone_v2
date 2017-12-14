@@ -22,10 +22,9 @@ class State(BaseModel, Base):
     @property
     def cities(self):
         """returns a list of City instances with state_id = current State.id"""
-        all_instances = models.storage.all()
+        all_instances = models.storage.all(City)
         query = []
         for key, value in all_instances.items():
-            if key.startswith('City') and getattr(
-                    value, 'state_id') == self.id:
+            if getattr(value, 'state_id') == self.id:
                 query.append(value)
         return query
