@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """set up database for storage"""
 
 import os
