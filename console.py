@@ -38,7 +38,7 @@ class HBNBCommand(cmd.Cmd):
         """Creates a new instance of a class"""
         ids = ['city_id', 'user_id']
         args = arg.split()
-        print(args)
+#        print(args)
         if len(args) == 0:
             print("** class name missing **")
             return False
@@ -53,12 +53,12 @@ class HBNBCommand(cmd.Cmd):
                 param.whitespace_split = True
                 param_list = list(param)
                 if param_match is not None:
-                    print(param_list)
+ #                   print(param_list)
                     value = shlex.split(param_list[1])
-                    print(value)
+#                    print(value)
                     param_list[1] = value[0]
-                    print(param_list[0])
-                    print(param_list[1])
+#                    print(param_list[0])
+#                    print(param_list[1])
                     if '_' in param_list[1]:
                         param_list[1] = param_list[1].replace('_', ' ')
                 else:
@@ -69,8 +69,8 @@ class HBNBCommand(cmd.Cmd):
                         else:
                             param_list[1] = int(param_list[1])
                 '''update instane with given params'''
-                print(param_list[0])
-                print(param_list[1])
+#                print(param_list[0])
+#                print(param_list[1])
                 new_dict[param_list[0]] = param_list[1]
             instance = classes[args[0]](**new_dict)
             instance.save()
