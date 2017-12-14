@@ -34,7 +34,7 @@ class BaseModel:
                 self.created_at = datetime.strptime(kwargs["created_at"], time)
             else:
                 self.created_at = datetime.utcnow()
-            if hasattr("updated_at", None) and type(self.updated_at) is str:
+            if kwargs.get("updated_at", None) and type(self.updated_at) is str:
                 self.updated_at = datetime.strptime(kwargs["updated_at"], time)
             else:
                 self.created_at = datetime.utcnow()
