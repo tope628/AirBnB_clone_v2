@@ -42,11 +42,13 @@ class DBStorage:
             if cls is None or cls in obj_types:
                 '''query all objects'''
                 for instance in self.__session.query(cls).all():
-  #                  print("instance: {}".format(instance))
+                    print("instance: {}".format(instance))
                     key = obj.__name__ + '.' + instance.id
-                    #print(key)
+                    print(key)
                     obj_dict[key] = instance
-   #         print(obj_dict)
+            print("AAAAAAAAHHHBFDGDFVWDFBRVVEWSCDSFVWTVR!!!!!!!!!!!!!!!!") 
+            print(obj_dict)
+            print("DICT WAS PRINTED""")
             return obj_dict
 
     def new(self, obj):
