@@ -46,7 +46,6 @@ class DBStorage:
                     key = obj.__name__ + '.' + instance.id
 #                    print(key)
                     obj_dict[key] = instance
-#            print("AAAAAAAAHHHBFDGDFVWDFBRVVEWSCDSFVWTVR!!!!!!!!!!!!!!!!") 
 #            print(obj_dict)
 #            print("DICT WAS PRINTED""")
             return obj_dict
